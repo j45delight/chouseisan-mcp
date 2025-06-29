@@ -49,7 +49,7 @@ class ChouseiSanMCPServer {
         }, async (request) => {
             try {
                 const { title, schedule, timeFormat = "19:30〜", memo } = request;
-                //console.error(`LLMベース日程解析開始: ${schedule}`);
+                console.error(`LLMベース日程解析開始: ${schedule}`);
                 // LLMを使用した自然言語による日程解析
                 const dateCandidates = await this.llmDateCalculator.parseScheduleWithLLM(schedule, timeFormat);
                 if (dateCandidates.length === 0) {
@@ -62,10 +62,10 @@ class ChouseiSanMCPServer {
                         ]
                     };
                 }
-                //console.error(`LLM日程候補生成完了: ${dateCandidates.length}件`);
+                console.error(`LLM日程候補生成完了: ${dateCandidates.length}件`);
                 // 調整さん自動化実行
                 const automator = new ChouseiSanAutomator();
-                //console.error("ブラウザ初期化開始");
+                console.error("ブラウザ初期化開始");
                 const initialized = await automator.init();
                 if (!initialized) {
                     return {
@@ -77,7 +77,7 @@ class ChouseiSanMCPServer {
                         ]
                     };
                 }
-                //console.error("調整さん作成開始");
+                console.error("調整さん作成開始");
                 const result = await automator.createEvent({
                     title,
                     memo,
@@ -85,7 +85,7 @@ class ChouseiSanMCPServer {
                     dateCandidates
                 });
                 await automator.close();
-                //console.error(`調整さん作成完了: ${result.success}`);
+                console.error(`調整さん作成完了: ${result.success}`);
                 if (result.success && result.url) {
                     return {
                         content: [
@@ -111,7 +111,7 @@ class ChouseiSanMCPServer {
                 }
             }
             catch (error) {
-                //console.error("調整さん作成エラー:", error);
+                console.error("調整さん作成エラー:", error);
                 return {
                     content: [
                         {
@@ -142,7 +142,7 @@ class ChouseiSanMCPServer {
         }, async (request) => {
             try {
                 const { schedule, timeFormat = "19:30〜", maxDates = 10 } = request;
-                //console.error(`LLMプレビュー解析開始: ${schedule}`);
+                console.error(`LLMプレビュー解析開始: ${schedule}`);
                 const dateCandidates = await this.llmDateCalculator.parseScheduleWithLLM(schedule, timeFormat);
                 if (dateCandidates.length === 0) {
                     return {
@@ -167,7 +167,7 @@ class ChouseiSanMCPServer {
                 };
             }
             catch (error) {
-                //console.error("LLMプレビューエラー:", error);
+                console.error("LLMプレビューエラー:", error);
                 return {
                     content: [
                         {
@@ -185,7 +185,7 @@ class ChouseiSanMCPServer {
     async start() {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
-        //console.error("調整さんMCP Server（LLMベース）が開始されました");
+        console.error("調整さんMCP Server（LLMベース）が開始されました");
     }
 }
 /**
@@ -193,24 +193,24 @@ class ChouseiSanMCPServer {
  */
 async function main() {
     try {
-        //console.error("調整さんMCP Server（LLMベース）開始中...");
+        console.error("調整さんMCP Server（LLMベース）開始中...");
         const server = new ChouseiSanMCPServer();
         // エラーハンドリング
         process.on("SIGINT", () => {
-            //console.error("\nサーバーを終了します...");
+            console.error("\nサーバーを終了します...");
             process.exit(0);
         });
         process.on("unhandledRejection", (reason, promise) => {
-            //console.error("Unhandled Rejection at:", promise, "reason:", reason);
+            console.error("Unhandled Rejection at:", promise, "reason:", reason);
         });
         process.on("uncaughtException", error => {
-            //console.error("Uncaught Exception:", error);
+            console.error("Uncaught Exception:", error);
         });
         await server.start();
     }
     catch (error) {
-        //console.error("サーバー開始エラー:", error);
-        //console.error("エラー詳細:", error instanceof Error ? error.stack : error);
+        console.error("サーバー開始エラー:", error);
+        console.error("エラー詳細:", error instanceof Error ? error.stack : error);
         process.exit(1);
     }
 }
@@ -220,4 +220,4 @@ const entryPath = path.resolve(process.argv[1]);
 if (currentPath === entryPath) {
     main().catch(console.error);
 }
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=index-llm.js.map

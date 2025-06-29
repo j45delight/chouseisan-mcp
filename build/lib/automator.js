@@ -18,7 +18,7 @@ export class ChouseiSanAutomator {
             console.error('ブラウザ初期化開始...');
             // Windows環境での設定を追加
             const launchOptions = {
-                headless: true,
+                headless: false,
                 args: [
                     '--no-sandbox',
                     '--disable-setuid-sandbox',

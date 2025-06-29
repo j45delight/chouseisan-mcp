@@ -1,0 +1,726 @@
+あなたの課題を理解しました。確かに、複雑な日付計算をプログラムでやるより、LLMに自然言語を理解させて日付リストを生成してもらう方がスマートですね。
+まず作業ディレクトリを作成してタスクを整理します。CWriteリクエスト{
+  `content`: `# 調整さんMCPサーバの自然言語日程解析改善タスク
+
+## タスク１：MCPサーバの調査・設計
+- [ ] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査
+- [ ] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討
+- [ ] 自然言語→日程候補リスト生成の最適なアプローチを決定
+
+## タスク２：LLMサンプリング機能を使った日程解析の実装
+- [ ] MCPサーバにsampling機能を追加
+- [ ] 自然言語の日程指定をLLMに送って構造化された日程リストを取得する機能を実装
+- [ ] 生成された日程リストを調整さん形式にフォーマットする機能を実装
+
+## タスク３：既存コードの統合とテスト
+- [ ] 新しい日程解析機能をChouseiSanAutomatorと統合
+- [ ] MCPサーバとしての動作テスト
+- [ ] Claude Desktopでの動作確認
+`,
+  `file_path`: `/workspace/manus/chouseisan-mcp/todo.md`
+}レスポンス{"type":"update","filePath":"/workspace/manus/chouseisan-mcp/todo.md","content":"# 調整さんMCPサーバの自然言語日程解析改善タスク\n\n## タスク１：MCPサーバの調査・設計\n- [ ] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査\n- [ ] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討\n- [ ] 自然言語→日程候補リスト生成の最適なアプローチを決定\n\n## タスク２：LLMサンプリング機能を使った日程解析の実装\n- [ ] MCPサーバにsampling機能を追加\n- [ ] 自然言語の日程指定をLLMに送って構造化された日程リストを取得する機能を実装\n- [ ] 生成された日程リストを調整さん形式にフォーマットする機能を実装\n\n## タスク３：既存コードの統合とテスト\n- [ ] 新しい日程解析機能をChouseiSanAutomatorと統合\n- [ ] MCPサーバとしての動作テスト\n- [ ] Claude Desktopでの動作確認\n","structuredPatch":[{"oldStart":1,"oldLines":19,"newStart":1,"newLines":16,"lines":["-# 調整さんMCPサーバータスク","+# 調整さんMCPサーバの自然言語日程解析改善タスク"," ","-## タスク1: 自然言語日時指定の改善","-- [ ] 現在のDateCalculatorの問題点分析","-- [ ] MCPのPrompts機能を活用した自然言語解析の設計","-- [ ] 日時解析ロジックの改善実装","-- [ ] テストケースの作成","+## タスク１：MCPサーバの調査・設計","+- [ ] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査","+- [ ] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討","+- [ ] 自然言語→日程候補リスト生成の最適なアプローチを決定"," ","-## タスク2: MCPサーバーの構築","-- [ ] MCPサーバーの基本構造設計","-- [ ] Tools機能の実装（調整さんURL作成）","-- [ ] Prompts機能の実装（日時指定テンプレート）","-- [ ] PlaywrightとMCPの統合","+## タスク２：LLMサンプリング機能を使った日程解析の実装","+- [ ] MCPサーバにsampling機能を追加","+- [ ] 自然言語の日程指定をLLMに送って構造化された日程リストを取得する機能を実装","+- [ ] 生成された日程リストを調整さん形式にフォーマットする機能を実装"," ","-## タスク3: 動作確認とテスト","-- [ ] MCPサーバーの動作確認","-- [ ] 自然言語日時指定のテスト","-- [ ] 調整さん作成の全体動作テスト","-- [ ] エラーハンドリングの確認","+## タスク３：既存コードの統合とテスト","+- [ ] 新しい日程解析機能をChouseiSanAutomatorと統合","+- [ ] MCPサーバとしての動作テスト","+- [ ] Claude Desktopでの動作確認"]}]}タスク１：MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査
+MCPのドキュメントを確認したところ、あなたの理想的なアプローチが実現可能です！
+MCPのSampling機能を使えば、MCPサーバからLLMに対して「自然言語の日程指定を構造化された日程リストに変換してください」というリクエストを送ることができます。
+実現方法：
+
+MCPサーバにsampling機能を追加
+
+サーバがLLMに日程解析をリクエスト
+自然言語（例：「毎週金曜日 19:30〜」）を送信
+
+
+LLMが日程リストを生成
+
+LLMが現在の日付を考慮
+指定された条件に合う日程候補を生成
+調整さん形式で出力
+
+
+結果を調整さんに送信
+
+生成された日程リストをそのまま使用
+
+
+
+メリット：
+
+複雑な正規表現やパターンマッチング不要
+自然な日本語に対応（「来月の毎週水曜日」「月末まで毎週火木」など）
+LLMが文脈を理解して適切な日程を生成
+CEditリクエスト{
+  `file_path`: `/workspace/manus/chouseisan-mcp/todo.md`,
+  `new_string`: `## タスク１：MCPサーバの調査・設計
+- [x] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査
+- [ ] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討
+- [ ] 自然言語→日程候補リスト生成の最適なアプローチを決定`,
+  `old_string`: `## タスク１：MCPサーバの調査・設計
+- [ ] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査
+- [ ] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討
+- [ ] 自然言語→日程候補リスト生成の最適なアプローチを決定`
+}レスポンス{"filePath":"/workspace/manus/chouseisan-mcp/todo.md","oldString":"## タスク１：MCPサーバの調査・設計\n- [ ] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査\n- [ ] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討\n- [ ] 自然言語→日程候補リスト生成の最適なアプローチを決定","newString":"## タスク１：MCPサーバの調査・設計\n- [x] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査\n- [ ] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討\n- [ ] 自然言語→日程候補リスト生成の最適なアプローチを決定","originalFile":"# 調整さんMCPサーバの自然言語日程解析改善タスク\n\n## タスク１：MCPサーバの調査・設計\n- [ ] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査\n- [ ] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討\n- [ ] 自然言語→日程候補リスト生成の最適なアプローチを決定\n\n## タスク２：LLMサンプリング機能を使った日程解析の実装\n- [ ] MCPサーバにsampling機能を追加\n- [ ] 自然言語の日程指定をLLMに送って構造化された日程リストを取得する機能を実装\n- [ ] 生成された日程リストを調整さん形式にフォーマットする機能を実装\n\n## タスク３：既存コードの統合とテスト\n- [ ] 新しい日程解析機能をChouseiSanAutomatorと統合\n- [ ] MCPサーバとしての動作テスト\n- [ ] Claude Desktopでの動作確認\n","structuredPatch":[{"oldStart":1,"oldLines":7,"newStart":1,"newLines":7,"lines":[" # 調整さんMCPサーバの自然言語日程解析改善タスク"," "," ## タスク１：MCPサーバの調査・設計","-- [ ] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査","+- [x] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査"," - [ ] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討"," - [ ] 自然言語→日程候補リスト生成の最適なアプローチを決定"," "]}]}設計の検討
+現在のDateCalculatorクラスをLLMベースに置き換える設計を考えてみます：CWriteリクエスト{
+  `content`: `import type { ChouseiSanEventData } from '../types/index.js';
+
+/**
+ * LLMベースの日程計算ユーティリティクラス
+ * 自然言語による日程指定をLLMに解析させ、具体的な日付リストを生成
+ */
+export class LLMDateCalculator {
+  private server: any; // MCPサーバインスタンス
+
+  constructor(server: any) {
+    this.server = server;
+  }
+
+  /**
+   * 自然言語の日程指定をLLMで解析して日程候補を生成
+   */
+  async parseScheduleWithLLM(
+    scheduleText: string, 
+    timeFormat: string = '19:30〜'
+  ): Promise<string[]> {
+    try {
+      // LLMに送信するプロンプト
+      const prompt = this.createScheduleParsingPrompt(scheduleText, timeFormat);
+      
+      // MCPのsampling機能を使ってLLMに日程解析を依頼
+      const response = await this.server.requestSampling({
+        messages: [
+          {
+            role: \"user\",
+            content: {
+              type: \"text\",
+              text: prompt
+            }
+          }
+        ],
+        modelPreferences: {
+          intelligencePriority: 0.8,
+          speedPriority: 0.6,
+          costPriority: 0.4
+        },
+        maxTokens: 1000
+      });
+
+      // LLMの回答から日程候補を抽出
+      return this.extractDateCandidates(response.content.text);
+      
+    } catch (error) {
+      console.error('LLMによる日程解析エラー:', error);
+      // フォールバック: 基本的な日程を返す
+      return this.generateFallbackDates(timeFormat);
+    }
+  }
+
+  /**
+   * 日程解析用プロンプトを作成
+   */
+  private createScheduleParsingPrompt(scheduleText: string, timeFormat: string): string {
+    const today = new Date();
+    const todayStr = today.toLocaleDateString('ja-JP', {
+      year: 'numeric',
+      month: 'long', 
+      day: 'numeric',
+      weekday: 'long'
+    });
+
+    return `現在日時: ${todayStr}
+
+以下の自然言語による日程指定を解析して、調整さん用の日程候補リストを生成してください。
+
+日程指定: \"${scheduleText}\"
+時間フォーマット: \"${timeFormat}\"
+
+出力形式の例：
+• 7月4日(金) 19:30〜
+• 7月11日(金) 19:30〜
+• 7月18日(金) 19:30〜
+• 7月25日(金) 19:30〜
+
+要件：
+1. 現在日時から将来の日程のみ生成
+2. 指定された時間フォーマットを使用
+3. 日本語形式で出力（月日(曜日) 時間〜）
+4. 箇条書きで出力（各行の最初に \"• \" を付ける）
+5. 最大10個の候補を生成
+
+日程候補:`;
+  }
+
+  /**
+   * LLMの回答から日程候補を抽出
+   */
+  private extractDateCandidates(llmResponse: string): string[] {
+    const lines = llmResponse.split('\
+');
+    const candidates: string[] = [];
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      // \"• \" で始まる行を日程候補として抽出
+      if (trimmed.startsWith('• ') || trimmed.startsWith('・ ')) {
+        const candidate = trimmed.substring(2).trim();
+        if (candidate && candidates.length < 10) {
+          candidates.push(candidate);
+        }
+      }
+    }
+
+    return candidates.length > 0 ? candidates : this.generateFallbackDates();
+  }
+
+  /**
+   * フォールバック用の基本的な日程を生成
+   */
+  private generateFallbackDates(timeFormat: string = '19:30〜'): string[] {
+    const dates: string[] = [];
+    const today = new Date();
+    
+    // 次の金曜日から4週間分
+    for (let i = 0; i < 4; i++) {
+      const targetDate = new Date(today);
+      const daysUntilFriday = (5 - today.getDay() + 7) % 7 || 7;
+      targetDate.setDate(today.getDate() + daysUntilFriday + (i * 7));
+      
+      const month = targetDate.getMonth() + 1;
+      const day = targetDate.getDate();
+      const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+      const dayOfWeek = dayNames[targetDate.getDay()];
+      
+      dates.push(`${month}月${day}日(${dayOfWeek}) ${timeFormat}`);
+    }
+    
+    return dates;
+  }
+
+  /**
+   * ChouseiSanEventData形式に変換
+   */
+  static async createEventData(
+    title: string,
+    scheduleText: string,
+    calculator: LLMDateCalculator,
+    options: {
+      memo?: string;
+      timeFormat?: string;
+    } = {}
+  ): Promise<ChouseiSanEventData> {
+    const timeFormat = options.timeFormat || '19:30〜';
+    const dateCandidates = await calculator.parseScheduleWithLLM(scheduleText, timeFormat);
+
+    return {
+      title,
+      memo: options.memo,
+      timeFormat,
+      dateCandidates
+    };
+  }
+}
+`,
+  `file_path`: `/workspace/manus/chouseisan-mcp/src/llm-date-calculator.ts`
+}レスポンス{"type":"create","filePath":"/workspace/manus/chouseisan-mcp/src/llm-date-calculator.ts","content":"import type { ChouseiSanEventData } from '../types/index.js';\n\n/**\n * LLMベースの日程計算ユーティリティクラス\n * 自然言語による日程指定をLLMに解析させ、具体的な日付リストを生成\n */\nexport class LLMDateCalculator {\n  private server: any; // MCPサーバインスタンス\n\n  constructor(server: any) {\n    this.server = server;\n  }\n\n  /**\n   * 自然言語の日程指定をLLMで解析して日程候補を生成\n   */\n  async parseScheduleWithLLM(\n    scheduleText: string, \n    timeFormat: string = '19:30〜'\n  ): Promise<string[]> {\n    try {\n      // LLMに送信するプロンプト\n      const prompt = this.createScheduleParsingPrompt(scheduleText, timeFormat);\n      \n      // MCPのsampling機能を使ってLLMに日程解析を依頼\n      const response = await this.server.requestSampling({\n        messages: [\n          {\n            role: \"user\",\n            content: {\n              type: \"text\",\n              text: prompt\n            }\n          }\n        ],\n        modelPreferences: {\n          intelligencePriority: 0.8,\n          speedPriority: 0.6,\n          costPriority: 0.4\n        },\n        maxTokens: 1000\n      });\n\n      // LLMの回答から日程候補を抽出\n      return this.extractDateCandidates(response.content.text);\n      \n    } catch (error) {\n      console.error('LLMによる日程解析エラー:', error);\n      // フォールバック: 基本的な日程を返す\n      return this.generateFallbackDates(timeFormat);\n    }\n  }\n\n  /**\n   * 日程解析用プロンプトを作成\n   */\n  private createScheduleParsingPrompt(scheduleText: string, timeFormat: string): string {\n    const today = new Date();\n    const todayStr = today.toLocaleDateString('ja-JP', {\n      year: 'numeric',\n      month: 'long', \n      day: 'numeric',\n      weekday: 'long'\n    });\n\n    return `現在日時: ${todayStr}\n\n以下の自然言語による日程指定を解析して、調整さん用の日程候補リストを生成してください。\n\n日程指定: \"${scheduleText}\"\n時間フォーマット: \"${timeFormat}\"\n\n出力形式の例：\n• 7月4日(金) 19:30〜\n• 7月11日(金) 19:30〜\n• 7月18日(金) 19:30〜\n• 7月25日(金) 19:30〜\n\n要件：\n1. 現在日時から将来の日程のみ生成\n2. 指定された時間フォーマットを使用\n3. 日本語形式で出力（月日(曜日) 時間〜）\n4. 箇条書きで出力（各行の最初に \"• \" を付ける）\n5. 最大10個の候補を生成\n\n日程候補:`;\n  }\n\n  /**\n   * LLMの回答から日程候補を抽出\n   */\n  private extractDateCandidates(llmResponse: string): string[] {\n    const lines = llmResponse.split('\\n');\n    const candidates: string[] = [];\n\n    for (const line of lines) {\n      const trimmed = line.trim();\n      // \"• \" で始まる行を日程候補として抽出\n      if (trimmed.startsWith('• ') || trimmed.startsWith('・ ')) {\n        const candidate = trimmed.substring(2).trim();\n        if (candidate && candidates.length < 10) {\n          candidates.push(candidate);\n        }\n      }\n    }\n\n    return candidates.length > 0 ? candidates : this.generateFallbackDates();\n  }\n\n  /**\n   * フォールバック用の基本的な日程を生成\n   */\n  private generateFallbackDates(timeFormat: string = '19:30〜'): string[] {\n    const dates: string[] = [];\n    const today = new Date();\n    \n    // 次の金曜日から4週間分\n    for (let i = 0; i < 4; i++) {\n      const targetDate = new Date(today);\n      const daysUntilFriday = (5 - today.getDay() + 7) % 7 || 7;\n      targetDate.setDate(today.getDate() + daysUntilFriday + (i * 7));\n      \n      const month = targetDate.getMonth() + 1;\n      const day = targetDate.getDate();\n      const dayNames = ['日', '月', '火', '水', '木', '金', '土'];\n      const dayOfWeek = dayNames[targetDate.getDay()];\n      \n      dates.push(`${month}月${day}日(${dayOfWeek}) ${timeFormat}`);\n    }\n    \n    return dates;\n  }\n\n  /**\n   * ChouseiSanEventData形式に変換\n   */\n  static async createEventData(\n    title: string,\n    scheduleText: string,\n    calculator: LLMDateCalculator,\n    options: {\n      memo?: string;\n      timeFormat?: string;\n    } = {}\n  ): Promise<ChouseiSanEventData> {\n    const timeFormat = options.timeFormat || '19:30〜';\n    const dateCandidates = await calculator.parseScheduleWithLLM(scheduleText, timeFormat);\n\n    return {\n      title,\n      memo: options.memo,\n      timeFormat,\n      dateCandidates\n    };\n  }\n}\n","structuredPatch":[]}次に、型定義ファイルも作成します：CWriteリクエスト{
+  `content`: `// 調整さん関連の型定義
+
+export interface ChouseiSanEventData {
+  title: string;
+  memo?: string;
+  timeFormat?: string;
+  dateCandidates?: string[];
+}
+
+export interface ChouseiSanResult {
+  success: boolean;
+  url?: string;
+  message?: string;
+  error?: string;
+}
+
+// 日付関連の型定義（従来版）
+export interface DateCandidate {
+  date: Date;
+  formatted: string;
+  dayOfWeek: number;
+}
+
+export interface DateParseOptions {
+  startDate?: Date;
+  endDate?: Date;
+  timeFormat?: string;
+  daysOfWeek?: number[];
+}
+
+// LLMサンプリング関連の型定義
+export interface LLMSamplingRequest {
+  messages: LLMMessage[];
+  modelPreferences?: ModelPreferences;
+  maxTokens?: number;
+  systemPrompt?: string;
+}
+
+export interface LLMMessage {
+  role: 'user' | 'assistant';
+  content: LLMContent;
+}
+
+export interface LLMContent {
+  type: 'text';
+  text: string;
+}
+
+export interface ModelPreferences {
+  intelligencePriority?: number;
+  speedPriority?: number;
+  costPriority?: number;
+  hints?: ModelHint[];
+}
+
+export interface ModelHint {
+  name?: string;
+}
+
+export interface LLMSamplingResponse {
+  role: 'assistant';
+  content: LLMContent;
+  model: string;
+  stopReason?: string;
+}
+`,
+  `file_path`: `/workspace/manus/chouseisan-mcp/types/index.ts`
+}レスポンス{"type":"create","filePath":"/workspace/manus/chouseisan-mcp/types/index.ts","content":"// 調整さん関連の型定義\n\nexport interface ChouseiSanEventData {\n  title: string;\n  memo?: string;\n  timeFormat?: string;\n  dateCandidates?: string[];\n}\n\nexport interface ChouseiSanResult {\n  success: boolean;\n  url?: string;\n  message?: string;\n  error?: string;\n}\n\n// 日付関連の型定義（従来版）\nexport interface DateCandidate {\n  date: Date;\n  formatted: string;\n  dayOfWeek: number;\n}\n\nexport interface DateParseOptions {\n  startDate?: Date;\n  endDate?: Date;\n  timeFormat?: string;\n  daysOfWeek?: number[];\n}\n\n// LLMサンプリング関連の型定義\nexport interface LLMSamplingRequest {\n  messages: LLMMessage[];\n  modelPreferences?: ModelPreferences;\n  maxTokens?: number;\n  systemPrompt?: string;\n}\n\nexport interface LLMMessage {\n  role: 'user' | 'assistant';\n  content: LLMContent;\n}\n\nexport interface LLMContent {\n  type: 'text';\n  text: string;\n}\n\nexport interface ModelPreferences {\n  intelligencePriority?: number;\n  speedPriority?: number;\n  costPriority?: number;\n  hints?: ModelHint[];\n}\n\nexport interface ModelHint {\n  name?: string;\n}\n\nexport interface LLMSamplingResponse {\n  role: 'assistant';\n  content: LLMContent;\n  model: string;\n  stopReason?: string;\n}\n","structuredPatch":[]}CEditリクエスト{
+  `file_path`: `/workspace/manus/chouseisan-mcp/todo.md`,
+  `new_string`: `## タスク１：MCPサーバの調査・設計
+- [x] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査
+- [x] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討
+- [x] 自然言語→日程候補リスト生成の最適なアプローチを決定`,
+  `old_string`: `## タスク１：MCPサーバの調査・設計
+- [x] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査
+- [ ] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討
+- [ ] 自然言語→日程候補リスト生成の最適なアプローチを決定`
+}レスポンス{"filePath":"/workspace/manus/chouseisan-mcp/todo.md","oldString":"## タスク１：MCPサーバの調査・設計\n- [x] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査\n- [ ] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討\n- [ ] 自然言語→日程候補リスト生成の最適なアプローチを決定","newString":"## タスク１：MCPサーバの調査・設計\n- [x] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査\n- [x] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討\n- [x] 自然言語→日程候補リスト生成の最適なアプローチを決定","originalFile":"# 調整さんMCPサーバの自然言語日程解析改善タスク\n\n## タスク１：MCPサーバの調査・設計\n- [x] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査\n- [ ] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討\n- [ ] 自然言語→日程候補リスト生成の最適なアプローチを決定\n\n## タスク２：LLMサンプリング機能を使った日程解析の実装\n- [ ] MCPサーバにsampling機能を追加\n- [ ] 自然言語の日程指定をLLMに送って構造化された日程リストを取得する機能を実装\n- [ ] 生成された日程リストを調整さん形式にフォーマットする機能を実装\n\n## タスク３：既存コードの統合とテスト\n- [ ] 新しい日程解析機能をChouseiSanAutomatorと統合\n- [ ] MCPサーバとしての動作テスト\n- [ ] Claude Desktopでの動作確認\n","structuredPatch":[{"oldStart":2,"oldLines":8,"newStart":2,"newLines":8,"lines":[" "," ## タスク１：MCPサーバの調査・設計"," - [x] MCPサーバでLLMサンプリング機能を使った日程解析の実現方法を調査","-- [ ] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討","-- [ ] 自然言語→日程候補リスト生成の最適なアプローチを決定","+- [x] 現在のDateCalculatorクラスをLLMベースに置き換える設計を検討","+- [x] 自然言語→日程候補リスト生成の最適なアプローチを決定"," "," ## タスク２：LLMサンプリング機能を使った日程解析の実装"," - [ ] MCPサーバにsampling機能を追加"]}]}タスク２：LLMサンプリング機能を使った日程解析の実装
+次に、実際のMCPサーバを作成します。sampling機能を含む完全なサーバを実装しましょう：CWriteリクエスト{
+  `content`: `{
+  \"name\": \"chouseisan-mcp-server\",
+  \"version\": \"1.0.0\",
+  \"description\": \"調整さんのイベント作成を自動化するMCPサーバ\",
+  \"type\": \"module\",
+  \"main\": \"build/server.js\",
+  \"bin\": {
+    \"chouseisan-mcp\": \"./build/server.js\"
+  },
+  \"scripts\": {
+    \"build\": \"tsc\",
+    \"dev\": \"tsc --watch\",
+    \"start\": \"node build/server.js\",
+    \"test\": \"echo \\\"Error: no test specified\\\" && exit 1\"
+  },
+  \"dependencies\": {
+    \"@modelcontextprotocol/sdk\": \"^1.0.0\",
+    \"playwright\": \"^1.45.0\",
+    \"zod\": \"^3.22.0\"
+  },
+  \"devDependencies\": {
+    \"@types/node\": \"^20.0.0\",
+    \"typescript\": \"^5.0.0\"
+  },
+  \"keywords\": [\"mcp\", \"chouseisan\", \"scheduling\", \"automation\"],
+  \"author\": \"\",
+  \"license\": \"MIT\"
+}
+`,
+  `file_path`: `/workspace/manus/chouseisan-mcp/package.json`
+}レスポンスError: Tool Write input is invalid: File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.CWriteリクエスト{
+  `content`: `{
+  \"name\": \"chouseisan-mcp-server\",
+  \"version\": \"1.0.0\",
+  \"description\": \"調整さんのイベント作成を自動化するMCPサーバ\",
+  \"type\": \"module\",
+  \"main\": \"build/server.js\",
+  \"bin\": {
+    \"chouseisan-mcp\": \"./build/server.js\"
+  },
+  \"scripts\": {
+    \"build\": \"tsc\",
+    \"dev\": \"tsc --watch\",
+    \"start\": \"node build/server.js\",
+    \"test\": \"echo \\\"Error: no test specified\\\" && exit 1\"
+  },
+  \"dependencies\": {
+    \"@modelcontextprotocol/sdk\": \"^1.0.0\",
+    \"playwright\": \"^1.45.0\",
+    \"zod\": \"^3.22.0\"
+  },
+  \"devDependencies\": {
+    \"@types/node\": \"^20.0.0\",
+    \"typescript\": \"^5.0.0\"
+  },
+  \"keywords\": [\"mcp\", \"chouseisan\", \"scheduling\", \"automation\"],
+  \"author\": \"\",
+  \"license\": \"MIT\"
+}
+`,
+  `file_path`: `/workspace/manus/chouseisan-mcp/package.json`
+}レスポンスError: Tool Write input is invalid: File has been modified since read, either by the user or by a linter. Read it again before attempting to write it.ディレクトリを確認します：CLSリクエスト{
+  `path`: `/workspace/manus/chouseisan-mcp`
+}レスポンス"- /workspace/manus/chouseisan-mcp/\n  - analysis.md\n  - build/\n  - node_modules/\n  - package-lock.json\n  - package.json\n  - src/\n    - index.ts\n    - lib/\n      - automator.ts\n      - date-calculator.ts\n    - llm-date-calculator.ts\n    - types/\n      - index.ts\n  - todo.md\n  - tsconfig.json\n  - types/\n    - index.ts\n"すでにプロジェクトが存在しているようですね。package.jsonを確認してから進みます：CReadリクエスト{
+  `file_path`: `/workspace/manus/chouseisan-mcp/package.json`
+}レスポンス{"type":"text","file":{"filePath":"/workspace/manus/chouseisan-mcp/package.json","content":"{\n  \"name\": \"chouseisan-mcp-server\",\n  \"version\": \"1.0.0\",\n  \"description\": \"MCP Server for automated Chouseisan (調整さん) event creation with natural language date parsing\",\n  \"type\": \"module\",\n  \"main\": \"build/index.js\",\n  \"bin\": {\n    \"chouseisan-mcp\": \"./build/index.js\"\n  },\n  \"scripts\": {\n    \"build\": \"tsc\",\n    \"dev\": \"tsx src/index.ts\",\n    \"start\": \"node build/index.js\",\n    \"test\": \"npm run build && node build/index.js\"\n  },\n  \"keywords\": [\n    \"mcp\",\n    \"model-context-protocol\",\n    \"chouseisan\",\n    \"scheduling\",\n    \"automation\",\n    \"playwright\"\n  ],\n  \"author\": \"MCP Development Team\",\n  \"license\": \"MIT\",\n  \"dependencies\": {\n    \"@modelcontextprotocol/sdk\": \"^1.13.2\",\n    \"playwright\": \"^1.40.0\",\n    \"zod\": \"^3.22.0\"\n  },\n  \"devDependencies\": {\n    \"@types/node\": \"^20.19.2\",\n    \"tsx\": \"^4.0.0\",\n    \"typescript\": \"^5.8.3\"\n  },\n  \"files\": [\n    \"build\"\n  ]\n}\n","numLines":40,"startLine":1,"totalLines":40}}既存のプロジェクトがあるので、現在のindex.tsを確認します：CReadリクエスト{
+  `file_path`: `/workspace/manus/chouseisan-mcp/src/index.ts`
+}レスポンス{"type":"text","file":{"filePath":"/workspace/manus/chouseisan-mcp/src/index.ts","content":"#!/usr/bin/env node\nimport { McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\";\nimport { StdioServerTransport } from \"@modelcontextprotocol/sdk/server/stdio.js\";\nimport { z } from \"zod\";\nimport { ChouseiSanAutomator } from \"./lib/automator.js\";\nimport { DateCalculator } from \"./lib/date-calculator.js\";\nimport { fileURLToPath } from \"url\";\nimport path from \"path\";\n\n/**\n * 調整さん自動化MCP Server\n * 自然言語による日程指定で調整さんのイベントを自動作成\n */\nclass ChouseiSanMCPServer {\n  server;\n\n  constructor() {\n    this.server = new McpServer({\n      name: \"chouseisan-mcp-server\",\n      version: \"1.0.0\"\n    });\n    this.setupTools();\n  }\n\n  /**\n   * MCPツールを設定\n   */\n  setupTools() {\n    // 調整さんイベント作成ツール\n    this.server.registerTool(\n      \"create_chouseisan_event\",\n      {\n        title: \"調整さんイベント作成\",\n        description:\n          \"自然言語による日程指定で調整さんのイベントを自動作成します。例: '毎週金曜日 19:30から の会議' または '1月15日、1月22日、1月29日 の打ち合わせ'\",\n        inputSchema: {\n          title: z.string().describe(\"イベントのタイトル\"),\n          schedule: z\n            .string()\n            .describe(\n              \"日程の指定（自然言語）。例: '毎週金曜日', '1月15日、1月22日、1月29日', '毎週月水金', '1月から3月まで毎週火曜日'\"\n            ),\n          timeFormat: z\n            .string()\n            .optional()\n            .default(\"19:30〜\")\n            .describe(\"時間帯の表記（例: '19:30〜', '10:00～12:00'）\"),\n          memo: z.string().optional().describe(\"メモや説明文\")\n        }\n      },\n      async request => {\n        try {\n          const { title, schedule, timeFormat = \"19:30〜\", memo } = request;\n\n          // 自然言語による日程解析\n          //console.error(`日程解析開始: ${schedule}`);\n          const dateCandidates = DateCalculator.parseSchedule(schedule, {\n            timeFormat\n          });\n          if (dateCandidates.length === 0) {\n            return {\n              content: [\n                {\n                  type: \"text\",\n                  text: `❌ 日程の解析に失敗しました。\\n指定された日程: \"${schedule}\"\\n\\n有効な形式例:\\n- \"毎週金曜日\"\\n- \"1月15日、1月22日、1月29日\"\\n- \"毎週月水金\"\\n- \"1月から3月まで毎週火曜日\"`\n                }\n              ]\n            };\n          }\n\n          //console.error(`日程候補生成完了: ${dateCandidates.length}件`);\n          const dateStrings =\n            DateCalculator.formatDatesForChouseisan(dateCandidates);\n\n          // 調整さん自動化実行\n          const automator = new ChouseiSanAutomator();\n          //console.error(\"ブラウザ初期化開始\");\n          const initialized = await automator.init();\n          if (!initialized) {\n            return {\n              content: [\n                {\n                  type: \"text\",\n                  text:\n                    \"❌ ブラウザの初期化に失敗しました。システム管理者にお問い合わせください。\"\n                }\n              ]\n            };\n          }\n\n          //console.error(\"調整さん作成開始\");\n          const result = await automator.createEvent({\n            title,\n            memo,\n            timeFormat,\n            dateCandidates: dateStrings\n          });\n          await automator.close();\n          //console.error(`調整さん作成完了: ${result.success}`);\n\n          if (result.success && result.url) {\n            return {\n              content: [\n                {\n                  type: \"text\",\n                  text: `✅ 調整さんイベントを作成しました！\\n\\n📅 **${title}**\\n🔗 **URL**: ${result.url}\\n\\n📋 **日程候補** (${dateCandidates.length}件):\\n${dateStrings\n                    .slice(0, 5)\n                    .map(d => `• ${d}`)\n                    .join(\n                      \"\\n\"\n                    )}${dateStrings.length > 5 ? `\\n... 他${dateStrings.length - 5}件` : \"\"}\\n\\n💡 このURLを参加者に共有してください。`\n                }\n              ]\n            };\n          } else {\n            return {\n              content: [\n                {\n                  type: \"text\",\n                  text: `❌ 調整さんの作成に失敗しました。\\n\\nエラー: ${result.error || result.message}\\n\\n再度お試しいただくか、手動で https://chouseisan.com/ にアクセスして作成してください。`\n                }\n              ]\n            };\n          }\n        } catch (error) {\n          //console.error(\"調整さん作成エラー:\", error);\n          return {\n            content: [\n              {\n                type: \"text\",\n                text: `❌ 予期しないエラーが発生しました: ${\n                  error instanceof Error ? error.message : String(error)\n                }`\n              }\n            ]\n          };\n        }\n      }\n    );\n\n    // 日程候補のプレビューツール\n    this.server.registerTool(\n      \"preview_schedule_candidates\",\n      {\n        title: \"日程候補プレビュー\",\n        description:\n          \"自然言語による日程指定を解析し、生成される日程候補をプレビューします\",\n        inputSchema: {\n          schedule: z.string().describe(\"日程の指定（自然言語）\"),\n          timeFormat: z\n            .string()\n            .optional()\n            .default(\"19:30〜\")\n            .describe(\"時間帯の表記\"),\n          maxDates: z\n            .number()\n            .optional()\n            .default(10)\n            .describe(\"表示する最大日程数\")\n        }\n      },\n      async request => {\n        try {\n          const {\n            schedule,\n            timeFormat = \"19:30〜\",\n            maxDates = 10\n          } = request;\n\n          const dateCandidates = DateCalculator.parseSchedule(schedule, {\n            timeFormat\n          });\n          if (dateCandidates.length === 0) {\n            return {\n              content: [\n                {\n                  type: \"text\",\n                  text: `❌ 日程の解析に失敗しました。\\n指定された日程: \"${schedule}\"\\n\\n有効な形式例:\\n- \"毎週金曜日\"\\n- \"1月15日、1月22日、1月29日\"\\n- \"毎週月水金\"`\n                }\n              ]\n            };\n          }\n\n          const dateStrings =\n            DateCalculator.formatDatesForChouseisan(dateCandidates);\n          const displayDates = dateStrings.slice(0, maxDates);\n\n          return {\n            content: [\n              {\n                type: \"text\",\n                text: `📅 **日程候補プレビュー**\\n\\n🔍 **解析した日程**: \"${schedule}\"\\n⏰ **時間**: ${timeFormat}\\n📊 **生成された候補数**: ${\n                  dateCandidates.length\n                }件\\n\\n📋 **日程一覧** (最初の${displayDates.length}件):\\n${displayDates\n                  .map((d, i) => `${i + 1}. ${d}`)\n                  .join(\n                    \"\\n\"\n                  )}${dateCandidates.length > maxDates ? `\\n\\n... 他${dateCandidates.length - maxDates}件の候補があります` : \"\"}`\n              }\n            ]\n          };\n        } catch (error) {\n          return {\n            content: [\n              {\n                type: \"text\",\n                text: `❌ 日程候補の生成に失敗しました: ${\n                  error instanceof Error ? error.message : String(error)\n                }`\n              }\n            ]\n          };\n        }\n      }\n    );\n  }\n\n  /**\n   * サーバーを開始\n   */\n  async start() {\n    const transport = new StdioServerTransport();\n    await this.server.connect(transport);\n    //console.error(\"調整さんMCP Serverが開始されました\");\n  }\n}\n\n/**\n * エントリーポイント\n */\nasync function main() {\n  try {\n    //console.error(\"調整さんMCP Server 開始中...\");\n    const server = new ChouseiSanMCPServer();\n\n    // エラーハンドリング\n    process.on(\"SIGINT\", () => {\n      //console.error(\"\\nサーバーを終了します...\");\n      process.exit(0);\n    });\n    process.on(\"unhandledRejection\", (reason, promise) => {\n      //console.error(\"Unhandled Rejection at:\", promise, \"reason:\", reason);\n      // プロセスを終了させない\n    });\n    process.on(\"uncaughtException\", error => {\n      //console.error(\"Uncaught Exception:\", error);\n      // プロセスを終了させない\n    });\n\n    await server.start();\n  } catch (error) {\n    //console.error(\"サーバー開始エラー:\", error);\n    //console.error(\"エラー詳細:\", error instanceof Error ? error.stack : error);\n    process.exit(1);\n  }\n}\n\n//console.log(\"DEBUG: main() 関数呼び出し前\");\n\n// ------------------- エントリーポイント判定 -------------------\nconst currentPath = fileURLToPath(import.meta.url);\nconst entryPath = path.resolve(process.argv[1]);\n\nif (currentPath === entryPath) {\n  main().catch(console.error);\n}\n// ----------------------------------------------------------------\n\n//# sourceMappingURL=index.js.map\n","numLines":270,"startLine":1,"totalLines":270}}現在のサーバーは従来のDateCalculatorを使用していますね。これをLLMベースに置き換えましょう。まず、サーバーでsampling機能を有効にして、LLMDateCalculatorを統合します：CWriteリクエスト{
+  `content`: `#!/usr/bin/env node
+import { McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\";
+import { StdioServerTransport } from \"@modelcontextprotocol/sdk/server/stdio.js\";
+import { z } from \"zod\";
+import { ChouseiSanAutomator } from \"./lib/automator.js\";
+import { LLMDateCalculator } from \"./llm-date-calculator.js\";
+import { fileURLToPath } from \"url\";
+import path from \"path\";
+
+/**
+ * 調整さん自動化MCP Server with LLM-based date parsing
+ * 自然言語による日程指定をLLMで解析して調整さんのイベントを自動作成
+ */
+class ChouseiSanMCPServer {
+  server;
+  llmDateCalculator;
+
+  constructor() {
+    this.server = new McpServer({
+      name: \"chouseisan-mcp-server\",
+      version: \"1.0.0\"
+    }, {
+      capabilities: {
+        // sampling機能を有効にする
+        sampling: {}
+      }
+    });
+    
+    this.llmDateCalculator = new LLMDateCalculator(this.server);
+    this.setupTools();
+  }
+
+  /**
+   * MCPツールを設定
+   */
+  setupTools() {
+    // 調整さんイベント作成ツール（LLMベース）
+    this.server.registerTool(
+      \"create_chouseisan_event\",
+      {
+        title: \"調整さんイベント作成（LLM解析）\",
+        description:
+          \"自然言語による日程指定をLLMで解析して調整さんのイベントを自動作成します。例: '毎週金曜日 19:30から の会議' または '来月の第2、第4火曜日の夕方' など、より自然な表現が可能です。\",
+        inputSchema: {
+          title: z.string().describe(\"イベントのタイトル\"),
+          schedule: z
+            .string()
+            .describe(
+              \"日程の指定（自然言語）。例: '毎週金曜日', '来月の毎週火曜日', '月末まで毎週水曜日', '1月15日、22日、29日', '来週から4週間、毎週月曜日'\"
+            ),
+          timeFormat: z
+            .string()
+            .optional()
+            .default(\"19:30〜\")
+            .describe(\"時間帯の表記（例: '19:30〜', '10:00～12:00'）\"),
+          memo: z.string().optional().describe(\"メモや説明文\")
+        }
+      },
+      async request => {
+        try {
+          const { title, schedule, timeFormat = \"19:30〜\", memo } = request;
+
+          console.error(`LLMベース日程解析開始: ${schedule}`);
+          
+          // LLMを使用した自然言語による日程解析
+          const dateCandidates = await this.llmDateCalculator.parseScheduleWithLLM(
+            schedule, 
+            timeFormat
+          );
+          
+          if (dateCandidates.length === 0) {
+            return {
+              content: [
+                {
+                  type: \"text\",
+                  text: `❌ 日程の解析に失敗しました。\
+指定された日程: \"${schedule}\"\
+\
+もう一度、別の表現で試してみてください。\
+例:\
+- \"毎週金曜日\"\
+- \"来月の毎週火曜日\"\
+- \"月末まで毎週水曜日\"\
+- \"1月15日、22日、29日\"`
+                }
+              ]
+            };
+          }
+
+          console.error(`LLM日程候補生成完了: ${dateCandidates.length}件`);
+
+          // 調整さん自動化実行
+          const automator = new ChouseiSanAutomator();
+          console.error(\"ブラウザ初期化開始\");
+          const initialized = await automator.init();
+          if (!initialized) {
+            return {
+              content: [
+                {
+                  type: \"text\",
+                  text:
+                    \"❌ ブラウザの初期化に失敗しました。システム管理者にお問い合わせください。\"
+                }
+              ]
+            };
+          }
+
+          console.error(\"調整さん作成開始\");
+          const result = await automator.createEvent({
+            title,
+            memo,
+            timeFormat,
+            dateCandidates
+          });
+          await automator.close();
+          console.error(`調整さん作成完了: ${result.success}`);
+
+          if (result.success && result.url) {
+            return {
+              content: [
+                {
+                  type: \"text\",
+                  text: `✅ 調整さんイベントを作成しました！\
+\
+📅 **${title}**\
+🔗 **URL**: ${result.url}\
+\
+📋 **日程候補** (${dateCandidates.length}件):\
+${dateCandidates
+                    .slice(0, 5)
+                    .map(d => `• ${d}`)
+                    .join(
+                      \"\
+\"
+                    )}${dateCandidates.length > 5 ? `\
+... 他${dateCandidates.length - 5}件` : \"\"}\
+\
+💡 このURLを参加者に共有してください。`
+                }
+              ]
+            };
+          } else {
+            return {
+              content: [
+                {
+                  type: \"text\",
+                  text: `❌ 調整さんの作成に失敗しました。\
+\
+エラー: ${result.error || result.message}\
+\
+再度お試しいただくか、手動で https://chouseisan.com/ にアクセスして作成してください。`
+                }
+              ]
+            };
+          }
+        } catch (error) {
+          console.error(\"調整さん作成エラー:\", error);
+          return {
+            content: [
+              {
+                type: \"text\",
+                text: `❌ 予期しないエラーが発生しました: ${
+                  error instanceof Error ? error.message : String(error)
+                }`
+              }
+            ]
+          };
+        }
+      }
+    );
+
+    // 日程候補のプレビューツール（LLMベース）
+    this.server.registerTool(
+      \"preview_schedule_candidates\",
+      {
+        title: \"日程候補プレビュー（LLM解析）\",
+        description:
+          \"自然言語による日程指定をLLMで解析し、生成される日程候補をプレビューします\",
+        inputSchema: {
+          schedule: z.string().describe(\"日程の指定（自然言語）\"),
+          timeFormat: z
+            .string()
+            .optional()
+            .default(\"19:30〜\")
+            .describe(\"時間帯の表記\"),
+          maxDates: z
+            .number()
+            .optional()
+            .default(10)
+            .describe(\"表示する最大日程数\")
+        }
+      },
+      async request => {
+        try {
+          const {
+            schedule,
+            timeFormat = \"19:30〜\",
+            maxDates = 10
+          } = request;
+
+          console.error(`LLMプレビュー解析開始: ${schedule}`);
+          
+          const dateCandidates = await this.llmDateCalculator.parseScheduleWithLLM(
+            schedule,
+            timeFormat
+          );
+          
+          if (dateCandidates.length === 0) {
+            return {
+              content: [
+                {
+                  type: \"text\",
+                  text: `❌ 日程の解析に失敗しました。\
+指定された日程: \"${schedule}\"\
+\
+もう一度、別の表現で試してみてください。`
+                }
+              ]
+            };
+          }
+
+          const displayDates = dateCandidates.slice(0, maxDates);
+
+          return {
+            content: [
+              {
+                type: \"text\",
+                text: `📅 **日程候補プレビュー（LLM解析）**\
+\
+🔍 **解析した日程**: \"${schedule}\"\
+⏰ **時間**: ${timeFormat}\
+📊 **生成された候補数**: ${
+                  dateCandidates.length
+                }件\
+\
+📋 **日程一覧** (最初の${displayDates.length}件):\
+${displayDates
+                  .map((d, i) => `${i + 1}. ${d}`)
+                  .join(
+                    \"\
+\"
+                  )}${dateCandidates.length > maxDates ? `\
+\
+... 他${dateCandidates.length - maxDates}件の候補があります` : \"\"}\
+\
+💡 この解析はLLMによって行われており、より自然な日本語表現に対応しています。`
+              }
+            ]
+          };
+        } catch (error) {
+          console.error(\"LLMプレビューエラー:\", error);
+          return {
+            content: [
+              {
+                type: \"text\",
+                text: `❌ 日程候補の生成に失敗しました: ${
+                  error instanceof Error ? error.message : String(error)
+                }`
+              }
+            ]
+          };
+        }
+      }
+    );
+  }
+
+  /**
+   * サーバーを開始
+   */
+  async start() {
+    const transport = new StdioServerTransport();
+    await this.server.connect(transport);
+    console.error(\"調整さんMCP Server（LLMベース）が開始されました\");
+  }
+}
+
+/**
+ * エントリーポイント
+ */
+async function main() {
+  try {
+    console.error(\"調整さんMCP Server（LLMベース）開始中...\");
+    const server = new ChouseiSanMCPServer();
+
+    // エラーハンドリング
+    process.on(\"SIGINT\", () => {
+      console.error(\"\
+サーバーを終了します...\");
+      process.exit(0);
+    });
+    process.on(\"unhandledRejection\", (reason, promise) => {
+      console.error(\"Unhandled Rejection at:\", promise, \"reason:\", reason);
+    });
+    process.on(\"uncaughtException\", error => {
+      console.error(\"Uncaught Exception:\", error);
+    });
+
+    await server.start();
+  } catch (error) {
+    console.error(\"サーバー開始エラー:\", error);
+    console.error(\"エラー詳細:\", error instanceof Error ? error.stack : error);
+    process.exit(1);
+  }
+}
+
+// ------------------- エントリーポイント判定 -------------------
+const currentPath = fileURLToPath(import.meta.url);
+const entryPath = path.resolve(process.argv[1]);
+
+if (currentPath === entryPath) {
+  main().catch(console.error);
+}
+`,
+  `file_path`: `/workspace/manus/chouseisan-mcp/src/index-llm.ts`
+}レスポンス{"type":"create","filePath":"/workspace/manus/chouseisan-mcp/src/index-llm.ts","content":"#!/usr/bin/env node\nimport { McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\";\nimport { StdioServerTransport } from \"@modelcontextprotocol/sdk/server/stdio.js\";\nimport { z } from \"zod\";\nimport { ChouseiSanAutomator } from \"./lib/automator.js\";\nimport { LLMDateCalculator } from \"./llm-date-calculator.js\";\nimport { fileURLToPath } from \"url\";\nimport path from \"path\";\n\n/**\n * 調整さん自動化MCP Server with LLM-based date parsing\n * 自然言語による日程指定をLLMで解析して調整さんのイベントを自動作成\n */\nclass ChouseiSanMCPServer {\n  server;\n  llmDateCalculator;\n\n  constructor() {\n    this.server = new McpServer({\n      name: \"chouseisan-mcp-server\",\n      version: \"1.0.0\"\n    }, {\n      capabilities: {\n        // sampling機能を有効にする\n        sampling: {}\n      }\n    });\n    \n    this.llmDateCalculator = new LLMDateCalculator(this.server);\n    this.setupTools();\n  }\n\n  /**\n   * MCPツールを設定\n   */\n  setupTools() {\n    // 調整さんイベント作成ツール（LLMベース）\n    this.server.registerTool(\n      \"create_chouseisan_event\",\n      {\n        title: \"調整さんイベント作成（LLM解析）\",\n        description:\n          \"自然言語による日程指定をLLMで解析して調整さんのイベントを自動作成します。例: '毎週金曜日 19:30から の会議' または '来月の第2、第4火曜日の夕方' など、より自然な表現が可能です。\",\n        inputSchema: {\n          title: z.string().describe(\"イベントのタイトル\"),\n          schedule: z\n            .string()\n            .describe(\n              \"日程の指定（自然言語）。例: '毎週金曜日', '来月の毎週火曜日', '月末まで毎週水曜日', '1月15日、22日、29日', '来週から4週間、毎週月曜日'\"\n            ),\n          timeFormat: z\n            .string()\n            .optional()\n            .default(\"19:30〜\")\n            .describe(\"時間帯の表記（例: '19:30〜', '10:00～12:00'）\"),\n          memo: z.string().optional().describe(\"メモや説明文\")\n        }\n      },\n      async request => {\n        try {\n          const { title, schedule, timeFormat = \"19:30〜\", memo } = request;\n\n          console.error(`LLMベース日程解析開始: ${schedule}`);\n          \n          // LLMを使用した自然言語による日程解析\n          const dateCandidates = await this.llmDateCalculator.parseScheduleWithLLM(\n            schedule, \n            timeFormat\n          );\n          \n          if (dateCandidates.length === 0) {\n            return {\n              content: [\n                {\n                  type: \"text\",\n                  text: `❌ 日程の解析に失敗しました。\\n指定された日程: \"${schedule}\"\\n\\nもう一度、別の表現で試してみてください。\\n例:\\n- \"毎週金曜日\"\\n- \"来月の毎週火曜日\"\\n- \"月末まで毎週水曜日\"\\n- \"1月15日、22日、29日\"`\n                }\n              ]\n            };\n          }\n\n          console.error(`LLM日程候補生成完了: ${dateCandidates.length}件`);\n\n          // 調整さん自動化実行\n          const automator = new ChouseiSanAutomator();\n          console.error(\"ブラウザ初期化開始\");\n          const initialized = await automator.init();\n          if (!initialized) {\n            return {\n              content: [\n                {\n                  type: \"text\",\n                  text:\n                    \"❌ ブラウザの初期化に失敗しました。システム管理者にお問い合わせください。\"\n                }\n              ]\n            };\n          }\n\n          console.error(\"調整さん作成開始\");\n          const result = await automator.createEvent({\n            title,\n            memo,\n            timeFormat,\n            dateCandidates\n          });\n          await automator.close();\n          console.error(`調整さん作成完了: ${result.success}`);\n\n          if (result.success && result.url) {\n            return {\n              content: [\n                {\n                  type: \"text\",\n                  text: `✅ 調整さんイベントを作成しました！\\n\\n📅 **${title}**\\n🔗 **URL**: ${result.url}\\n\\n📋 **日程候補** (${dateCandidates.length}件):\\n${dateCandidates\n                    .slice(0, 5)\n                    .map(d => `• ${d}`)\n                    .join(\n                      \"\\n\"\n                    )}${dateCandidates.length > 5 ? `\\n... 他${dateCandidates.length - 5}件` : \"\"}\\n\\n💡 このURLを参加者に共有してください。`\n                }\n              ]\n            };\n          } else {\n            return {\n              content: [\n                {\n                  type: \"text\",\n                  text: `❌ 調整さんの作成に失敗しました。\\n\\nエラー: ${result.error || result.message}\\n\\n再度お試しいただくか、手動で https://chouseisan.com/ にアクセスして作成してください。`\n                }\n              ]\n            };\n          }\n        } catch (error) {\n          console.error(\"調整さん作成エラー:\", error);\n          return {\n            content: [\n              {\n                type: \"text\",\n                text: `❌ 予期しないエラーが発生しました: ${\n                  error instanceof Error ? error.message : String(error)\n                }`\n              }\n            ]\n          };\n        }\n      }\n    );\n\n    // 日程候補のプレビューツール（LLMベース）\n    this.server.registerTool(\n      \"preview_schedule_candidates\",\n      {\n        title: \"日程候補プレビュー（LLM解析）\",\n        description:\n          \"自然言語による日程指定をLLMで解析し、生成される日程候補をプレビューします\",\n        inputSchema: {\n          schedule: z.string().describe(\"日程の指定（自然言語）\"),\n          timeFormat: z\n            .string()\n            .optional()\n            .default(\"19:30〜\")\n            .describe(\"時間帯の表記\"),\n          maxDates: z\n            .number()\n            .optional()\n            .default(10)\n            .describe(\"表示する最大日程数\")\n        }\n      },\n      async request => {\n        try {\n          const {\n            schedule,\n            timeFormat = \"19:30〜\",\n            maxDates = 10\n          } = request;\n\n          console.error(`LLMプレビュー解析開始: ${schedule}`);\n          \n          const dateCandidates = await this.llmDateCalculator.parseScheduleWithLLM(\n            schedule,\n            timeFormat\n          );\n          \n          if (dateCandidates.length === 0) {\n            return {\n              content: [\n                {\n                  type: \"text\",\n                  text: `❌ 日程の解析に失敗しました。\\n指定された日程: \"${schedule}\"\\n\\nもう一度、別の表現で試してみてください。`\n                }\n              ]\n            };\n          }\n\n          const displayDates = dateCandidates.slice(0, maxDates);\n\n          return {\n            content: [\n              {\n                type: \"text\",\n                text: `📅 **日程候補プレビュー（LLM解析）**\\n\\n🔍 **解析した日程**: \"${schedule}\"\\n⏰ **時間**: ${timeFormat}\\n📊 **生成された候補数**: ${\n                  dateCandidates.length\n                }件\\n\\n📋 **日程一覧** (最初の${displayDates.length}件):\\n${displayDates\n                  .map((d, i) => `${i + 1}. ${d}`)\n                  .join(\n                    \"\\n\"\n                  )}${dateCandidates.length > maxDates ? `\\n\\n... 他${dateCandidates.length - maxDates}件の候補があります` : \"\"}\\n\\n💡 この解析はLLMによって行われており、より自然な日本語表現に対応しています。`\n              }\n            ]\n          };\n        } catch (error) {\n          console.error(\"LLMプレビューエラー:\", error);\n          return {\n            content: [\n              {\n                type: \"text\",\n                text: `❌ 日程候補の生成に失敗しました: ${\n                  error instanceof Error ? error.message : String(error)\n                }`\n              }\n            ]\n          };\n        }\n      }\n    );\n  }\n\n  /**\n   * サーバーを開始\n   */\n  async start() {\n    const transport = new StdioServerTransport();\n    await this.server.connect(transport);\n    console.error(\"調整さんMCP Server（LLMベース）が開始されました\");\n  }\n}\n\n/**\n * エントリーポイント\n */\nasync function main() {\n  try {\n    console.error(\"調整さんMCP Server（LLMベース）開始中...\");\n    const server = new ChouseiSanMCPServer();\n\n    // エラーハンドリング\n    process.on(\"SIGINT\", () => {\n      console.error(\"\\nサーバーを終了します...\");\n      process.exit(0);\n    });\n    process.on(\"unhandledRejection\", (reason, promise) => {\n      console.error(\"Unhandled Rejection at:\", promise, \"reason:\", reason);\n    });\n    process.on(\"uncaughtException\", error => {\n      console.error(\"Uncaught Exception:\", error);\n    });\n\n    await server.start();\n  } catch (error) {\n    console.error(\"サーバー開始エラー:\", error);\n    console.error(\"エラー詳細:\", error instanceof Error ? error.stack : error);\n    process.exit(1);\n  }\n}\n\n// ------------------- エントリーポイント判定 -------------------\nconst currentPath = fileURLToPath(import.meta.url);\nconst entryPath = path.resolve(process.argv[1]);\n\nif (currentPath === entryPath) {\n  main().catch(console.error);\n}\n","structuredPatch":[]}しかし、LLMDateCalculatorのsampling機能の実装に問題があります。MCPサーバー内でsampling機能を使うには、適切なAPIを使用する必要があります。修正版を作成します：CWrite
+リクエスト
+
+{
+  `content`: `import type { ChouseiSanEventData } from '../types/index.js';
+
+/**
+ * LLMベースの日程計算ユーティリティクラス
+ * 自然言語による日程指定をMCPのsampling機能で解析し、具体的な日付リストを生成
+ */
+export class LLMDateCalculator {
+  private server: any; // MCPサーバインスタンス
+
+  constructor(server: any) {
+    this.server = server;
+  }
+
+  /**
+   * 自然言語の日程指定をLLMで解析して日程候補を生成
+   */
+  async parseScheduleWithLLM(
+    scheduleText: string, 
+    timeFormat: string = '19:30〜'
+  ): Promise<string[]> {
+    try {
+      // LLMに送信するプロンプト
+      const prompt = this.createScheduleParsingPrompt(scheduleText, timeFormat);
+      
+      // MCPのsampling機能を使ってLLMに日程解析を依頼
+      // サーバー側からクライアントのLLMを呼び出す
+      const response = await this.server.requestSampling({
+        messages: [
+          {
+            role: \"user\",
+            content: {
+              type: \"text\",
+              text: prompt
+            }
+          }`
+}
+
+
+
+
