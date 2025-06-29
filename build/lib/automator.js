@@ -74,8 +74,7 @@ export class ChouseiSanAutomator {
             // 調整さんのメインページへアクセス
             await this.page.goto('https://chouseisan.com/', { timeout: 30000 });
             // イベント名を入力
-            const titleField = this.page.locator('input[name=\"event_name\"]');
-            await titleField.fill(eventData.title);
+            await this.page.getByRole('textbox', { name: 'event_name' }).fill(eventData.title);
             // メモがある場合は入力
             if (eventData.memo) {
                 const memoField = this.page.locator('textarea[name=\"comment\"]');
@@ -83,16 +82,15 @@ export class ChouseiSanAutomator {
             }
             // 時間設定を変更
             if (eventData.timeFormat) {
-                const timeField = this.page.locator('input[name=\"calendar_time_suffix\"]');
-                await timeField.fill(eventData.timeFormat);
+                await this.page.getByRole('textbox', { name: 'calendar_time_suffix' }).fill(eventData.timeFormat);
             }
             // 日程候補を入力
             if (eventData.dateCandidates && eventData.dateCandidates.length > 0) {
-                const dateField = this.page.locator('textarea[name=\"event_kouho\"]');
-                await dateField.fill(eventData.dateCandidates.join('\\n'));
+                const dateField = this.page.getByRole('textbox', { name: 'event_kouho' });
+                await dateField.fill(eventData.dateCandidates.join('\n'));
             }
             // 出欠表を作成ボタンをクリック
-            const createButton = this.page.locator('input[type=\"submit\"][value*=\"出欠表をつくる\"]');
+            const createButton = this.page.getByRole('button', { name: '出欠表をつくる' });
             await createButton.click();
             // 結果ページの読み込みを待つ
             await this.page.waitForURL('**/create_complete**', { timeout: 15000 });
