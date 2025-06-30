@@ -22,17 +22,12 @@ class ChouseiSanMCPServer {
     }, {
       capabilities: {
         // Gemini APIを使用するためsampling機能は不要
-        tools: {}
+        sampling: {}
       }
     });
 
-    try {
-      this.geminiDateCalculator = new GeminiDateCalculator();
-    } catch (error) {
-      //console.error("❌ Gemini API key not found. Please set GEMINI_API_KEY environment variable.");
-      process.exit(1);
-    }
 
+    this.geminiDateCalculator = new GeminiDateCalculator();
     this.setupTools();
     this.testGeminiConnection();
   }
@@ -162,7 +157,7 @@ class ChouseiSanMCPServer {
                 type: "text",
                 text: `❌ 予期しないエラーが発生しました: ${
                   error instanceof Error ? error.message : String(error)
-                }\n\n**Gemini API関連の可能性がある場合:**\n- GEMINI_API_KEY環境変数が設定されているか確認\n- APIキーが有効か確認\n- インターネット接続を確認`
+                }`
               }
             ]
           };
@@ -241,7 +236,7 @@ class ChouseiSanMCPServer {
                 type: "text",
                 text: `❌ 日程候補の生成に失敗しました: ${
                   error instanceof Error ? error.message : String(error)
-                }\n\n**考えられる原因:**\n- Gemini API接続エラー\n- APIキーの問題\n- レート制限\n- ネットワーク問題\n\n**対処法:**\n- しばらく待ってから再試行\n- 環境変数GEMINI_API_KEYを確認`
+                }`
               }
             ]
           };
@@ -266,13 +261,6 @@ class ChouseiSanMCPServer {
 async function main() {
   try {
     //console.error("調整さんMCP Server（Gemini API版）開始中...");
-    
-    // 環境変数チェック
-    if (!process.env.GEMINI_API_KEY) {
-      //console.error("❌ GEMINI_API_KEY environment variable is required");
-      //console.error("💡 Set it like: export GEMINI_API_KEY=your_api_key_here");
-      process.exit(1);
-    }
 
     const server = new ChouseiSanMCPServer();
 

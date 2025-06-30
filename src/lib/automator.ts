@@ -23,7 +23,7 @@ export class ChouseiSanAutomator {
       
       // Windows環境での設定を追加
       const launchOptions = { 
-        headless: false,
+        headless: true,
         args: [
           '--no-sandbox', 
           '--disable-setuid-sandbox',
