@@ -23,7 +23,7 @@ export class ChouseiSanAutomator {
       
       // Windows環境での設定を追加
       const launchOptions = { 
-        headless: true,
+        headless: false,
         args: [
           '--no-sandbox', 
           '--disable-setuid-sandbox',
@@ -83,7 +83,6 @@ export class ChouseiSanAutomator {
     try {
       // 調整さんのメインページへアクセス
       await this.page.goto('https://chouseisan.com/', { timeout: 30000 });
-      
       // イベント名を入力
       await this.page.getByRole('textbox', { name: 'event_name' }).fill(eventData.title);
       
