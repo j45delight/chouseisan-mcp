@@ -24,13 +24,21 @@ cd chouseisan-mcp
 npm install
 ```
 
-### 3. Gemini APIキーの取得
+### 3. Playwrightのインストール
+
+Playwrightのブラウザをインストールします。
+
+```bash
+npx playwright install
+```
+
+### 4. Gemini APIキーの取得
 
 Gemini APIキーを取得してください。APIキーは以下のリンクから取得できます：
 
 **🔗 [Gemini API Key 取得ページ](https://aistudio.google.com/app/apikey?hl=ja)**
 
-### 4. プロジェクトのビルド
+### 5. プロジェクトのビルド
 
 chouseisan_mcpディレクトリで以下のコマンドを実行
 
@@ -38,7 +46,7 @@ chouseisan_mcpディレクトリで以下のコマンドを実行
 npm run build
 ```
 
-### 5. MCPサーバーの設定
+### 6. MCPサーバーの設定
 
 Claude DesktopなどのMCPクライアントの設定ファイルに以下を追加してください：
 
