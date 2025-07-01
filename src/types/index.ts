@@ -1,6 +1,7 @@
 export interface ChouseiSanEventData {
   title: string;
   dateCandidates: string[];
+  excludeDates: string[];
   timeFormat?: string;
   memo?: string;
 }

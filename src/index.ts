@@ -45,6 +45,9 @@ class ChouseiSanMCPServer {
           dateCandidates: z.array(z.string()).describe(
             "日程候補のリスト。YYYY年MM月DD日(曜日) 形式で指定してください。例: ['2024年7月5日(金)', '2024年7月12日(金)', '2024年7月19日(金)']。MCPクライアント（Claude）が自然言語指定を解析してこの配列を生成します。"
           ),
+          dateExclusions: z.array(z.string()).optional().describe(
+            "除外する日程のリスト。dateCandidatesと同じ形式で指定してください。例: ['2024年7月11日(木)', '2024年7月21日(月)']。MCPクライアント（Claude）が除外条件（祝日、お盆、指定日など）を解析してこの配列を生成します。"
+          ),
           timeFormat: z
             .string()
             .optional()
@@ -55,7 +58,7 @@ class ChouseiSanMCPServer {
       },
       async (request) => {
         try {
-          const { title, dateCandidates, timeFormat = "19:30〜", memo } = request;
+          const { title, dateCandidates, dateExclusions = [], timeFormat = "19:30〜", memo } = request;
 
           // 入力検証
           if (!Array.isArray(dateCandidates) || dateCandidates.length === 0) {
@@ -71,7 +74,14 @@ class ChouseiSanMCPServer {
 
           //console.error(`Claude解析による日程候補受信: ${dateCandidates.length}件`);
           //console.error(`候補一覧: ${dateCandidates.slice(0, 3).join(", ")}${dateCandidates.length > 3 ? "..." : ""}`);
-
+          // 新しい変数でフィルタリング結果を保持
+          let filteredDateCandidates = dateCandidates; // 初期値として元の候補を設定
+          // 除外処理実行
+          if (Array.isArray(request.dateExclusions) && request.dateExclusions.length > 0) {
+            //console.error(`除外日程候補: ${request.excludeData.join(", ")}`);
+            filteredDateCandidates = dateCandidates.filter(date => !dateExclusions.includes(date));
+          }
+          
           // 調整さん自動化実行
           const email = process.env.CHOUSEISAN_EMAIL || "";
           const password = process.env.CHOUSEISAN_PASSWORD || "";
@@ -96,7 +106,8 @@ class ChouseiSanMCPServer {
             title,
             memo,
             timeFormat,
-            dateCandidates
+            dateCandidates: filteredDateCandidates,
+            excludeDates: dateExclusions,
           });
           await automator.close();
           //console.error(`調整さん作成完了: ${result.success}`);
