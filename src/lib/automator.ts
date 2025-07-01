@@ -155,7 +155,7 @@ export class ChouseiSanAutomator {
       await this.page.goto('https://chouseisan.com/', { timeout: 30000 });
       
       // ページが完全に読み込まれるまで待機
-      await this.page.waitForLoadState('networkidle');
+      //await this.page.waitForLoadState('networkidle');
       
       // イベント名を入力
       console.error('イベント名入力:', eventData.title);
