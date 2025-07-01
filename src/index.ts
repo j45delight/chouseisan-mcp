@@ -67,12 +67,12 @@ class ChouseiSanMCPServer {
             };
           }
 
-          console.error(`Claude解析による日程候補受信: ${dateCandidates.length}件`);
-          console.error(`候補一覧: ${dateCandidates.slice(0, 3).join(", ")}${dateCandidates.length > 3 ? "..." : ""}`);
+          //console.error(`Claude解析による日程候補受信: ${dateCandidates.length}件`);
+          //console.error(`候補一覧: ${dateCandidates.slice(0, 3).join(", ")}${dateCandidates.length > 3 ? "..." : ""}`);
 
           // 調整さん自動化実行
           const automator = new ChouseiSanAutomator();
-          console.error("ブラウザ初期化開始");
+          //console.error("ブラウザ初期化開始");
           const initialized = await automator.init();
           if (!initialized) {
             return {
@@ -85,7 +85,7 @@ class ChouseiSanMCPServer {
             };
           }
 
-          console.error("調整さん作成開始");
+          //console.error("調整さん作成開始");
           const result = await automator.createEvent({
             title,
             memo,
@@ -93,7 +93,7 @@ class ChouseiSanMCPServer {
             dateCandidates
           });
           await automator.close();
-          console.error(`調整さん作成完了: ${result.success}`);
+          //console.error(`調整さん作成完了: ${result.success}`);
 
           if (result.success && result.url) {
             return {
@@ -120,7 +120,7 @@ class ChouseiSanMCPServer {
             };
           }
         } catch (error) {
-          console.error("調整さん作成エラー:", error);
+          //console.error("調整さん作成エラー:", error);
           return {
             content: [
               {
@@ -193,7 +193,7 @@ class ChouseiSanMCPServer {
             ]
           };
         } catch (error) {
-          console.error("バリデーションエラー:", error);
+          //console.error("バリデーションエラー:", error);
           return {
             content: [
               {
@@ -215,7 +215,7 @@ class ChouseiSanMCPServer {
   async start() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("調整さんMCP Server（Claude解析版）が開始されました");
+    //console.error("調整さんMCP Server（Claude解析版）が開始されました");
   }
 }
 
@@ -224,26 +224,26 @@ class ChouseiSanMCPServer {
  */
 async function main() {
   try {
-    console.error("調整さんMCP Server（Claude解析版）開始中...");
+    //console.error("調整さんMCP Server（Claude解析版）開始中...");
 
     const server = new ChouseiSanMCPServer();
 
     // エラーハンドリング
     process.on("SIGINT", () => {
-      console.error("\nサーバーを終了します...");
+      //console.error("\nサーバーを終了します...");
       process.exit(0);
     });
     process.on("unhandledRejection", (reason, promise) => {
-      console.error("Unhandled Rejection at:", promise, "reason:", reason);
+      //console.error("Unhandled Rejection at:", promise, "reason:", reason);
     });
     process.on("uncaughtException", error => {
-      console.error("Uncaught Exception:", error);
+      //console.error("Uncaught Exception:", error);
     });
 
     await server.start();
   } catch (error) {
-    console.error("サーバー開始エラー:", error);
-    console.error("エラー詳細:", error instanceof Error ? error.stack : error);
+    //console.error("サーバー開始エラー:", error);
+    //console.error("エラー詳細:", error instanceof Error ? error.stack : error);
     process.exit(1);
   }
 }
