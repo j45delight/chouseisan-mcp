@@ -3,69 +3,46 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { ChouseiSanAutomator } from "./lib/automator.js";
-import { GeminiDateCalculator } from "./gemini-date-calculator.js";
 import { fileURLToPath } from "url";
 import path from "path";
 
 /**
- * 調整さん自動化MCP Server with Gemini API-based date parsing
- * 自然言語による日程指定をGemini APIで解析して調整さんのイベントを自動作成
+ * 調整さん自動化MCP Server with Claude direct date parsing
+ * Gemini APIを使わず、MCPクライアント（Claude）が直接日程候補を生成
  */
 class ChouseiSanMCPServer {
   server;
-  geminiDateCalculator;
 
   constructor() {
     this.server = new McpServer({
-      name: "chouseisan-mcp-server-gemini",
+      name: "chouseisan-mcp-server-claude",
       version: "1.0.0"
     }, {
       capabilities: {
-        // Gemini APIを使用するためsampling機能は不要
-        sampling: {}
+        tools: {
+          listChanged: true
+        }
       }
     });
 
-
-    this.geminiDateCalculator = new GeminiDateCalculator();
     this.setupTools();
-    this.testGeminiConnection();
-  }
-
-  /**
-   * Gemini API接続テスト
-   */
-  async testGeminiConnection() {
-    try {
-      const isConnected = await this.geminiDateCalculator.testConnection();
-      if (isConnected) {
-        //console.error("✅ Gemini API connection successful");
-      } else {
-        //console.error("❌ Gemini API connection failed");
-      }
-    } catch (error) {
-      //console.error("❌ Gemini API test error:", error);
-    }
   }
 
   /**
    * MCPツールを設定
    */
   setupTools() {
-    // 調整さんイベント作成ツール（Gemini APIベース）
+    // 調整さんイベント作成ツール（Claude直接解析版）
     this.server.registerTool(
       "create_chouseisan_event",
       {
-        title: "調整さんイベント作成（Gemini API解析）",
-        description:
-          "自然言語による日程指定をGemini APIで解析して調整さんのイベントを自動作成します。例: '毎週金曜日 19:30から の会議' または '来月の第2、第4火曜日の夕方' など、より自然な表現が可能です。",
+        title: "調整さんイベント作成（Claude解析）",
+        description: "具体的な日程候補リストから調整さんのイベントを自動作成します。MCPクライアント（Claude）が自然言語の日程指定を解析して、具体的な日程候補配列を生成してください。",
         inputSchema: {
           title: z.string().describe("イベントのタイトル"),
-          schedule: z
-            .string()
-            .describe(
-              "日程の指定（自然言語）。例: '毎週金曜日', '来月の毎週火曜日', '月末まで毎週水曜日', '1月15日、22日、29日', '来週から4週間、毎週月曜日'"
-            ),
+          dateCandidates: z.array(z.string()).describe(
+            "日程候補のリスト。YYYY年MM月DD日(曜日) 形式で指定してください。例: ['2024年7月5日(金)', '2024年7月12日(金)', '2024年7月19日(金)']。MCPクライアント（Claude）が自然言語指定を解析してこの配列を生成します。"
+          ),
           timeFormat: z
             .string()
             .optional()
@@ -74,48 +51,41 @@ class ChouseiSanMCPServer {
           memo: z.string().optional().describe("メモや説明文")
         }
       },
-      async request => {
+      async (request) => {
         try {
-          const { title, schedule, timeFormat = "19:30〜", memo } = request;
+          const { title, dateCandidates, timeFormat = "19:30〜", memo } = request;
 
-          //console.error(`Gemini APIベース日程解析開始: ${schedule}`);
-
-          // Gemini APIを使用した自然言語による日程解析
-          const dateCandidates = await this.geminiDateCalculator.parseScheduleWithGemini(
-            schedule,
-            timeFormat
-          );
-
-          if (dateCandidates.length === 0) {
+          // 入力検証
+          if (!Array.isArray(dateCandidates) || dateCandidates.length === 0) {
             return {
               content: [
                 {
                   type: "text",
-                  text: `❌ 日程の解析に失敗しました。\n指定された日程: "${schedule}"\n\nもう一度、別の表現で試してみてください。\n例:\n- "毎週金曜日"\n- "来月の毎週火曜日"\n- "月末まで毎週水曜日"\n- "1月15日、22日、29日"`
+                  text: `❌ 日程候補が指定されていません。\n\nMCPクライアント（Claude）が自然言語の日程指定を解析して、以下の形式で日程候補配列を生成してください：\n\n例: ['2024年7月5日(金)', '2024年7月12日(金)', '2024年7月19日(金)']\n\n日程候補数: 最低1件以上必要`
                 }
               ]
             };
           }
 
-          //console.error(`Gemini API日程候補生成完了: ${dateCandidates.length}件`);
+          console.error(`Claude解析による日程候補受信: ${dateCandidates.length}件`);
+          console.error(`候補一覧: ${dateCandidates.slice(0, 3).join(", ")}${dateCandidates.length > 3 ? "..." : ""}`);
 
           // 調整さん自動化実行
           const automator = new ChouseiSanAutomator();
-          //console.error("ブラウザ初期化開始");
+          console.error("ブラウザ初期化開始");
           const initialized = await automator.init();
           if (!initialized) {
             return {
               content: [
                 {
                   type: "text",
-                  text:
-                    "❌ ブラウザの初期化に失敗しました。システム管理者にお問い合わせください。"
+                  text: "❌ ブラウザの初期化に失敗しました。システム管理者にお問い合わせください。"
                 }
               ]
             };
           }
 
-          //console.error("調整さん作成開始");
+          console.error("調整さん作成開始");
           const result = await automator.createEvent({
             title,
             memo,
@@ -123,7 +93,7 @@ class ChouseiSanMCPServer {
             dateCandidates
           });
           await automator.close();
-          //console.error(`調整さん作成完了: ${result.success}`);
+          console.error(`調整さん作成完了: ${result.success}`);
 
           if (result.success && result.url) {
             return {
@@ -135,7 +105,7 @@ class ChouseiSanMCPServer {
                     .map(d => `• ${d}`)
                     .join(
                       "\n"
-                    )}${dateCandidates.length > 5 ? `\n... 他${dateCandidates.length - 5}件` : ""}\n\n💡 このURLを参加者に共有してください。\n\n🤖 **Powered by Gemini API** で自然言語解析しました。`
+                    )}${dateCandidates.length > 5 ? `\n... 他${dateCandidates.length - 5}件` : ""}\n\n💡 このURLを参加者に共有してください。\n\n🤖 **Powered by Claude** で日程解析しました。`
                 }
               ]
             };
@@ -150,7 +120,7 @@ class ChouseiSanMCPServer {
             };
           }
         } catch (error) {
-          //console.error("調整さん作成エラー:", error);
+          console.error("調整さん作成エラー:", error);
           return {
             content: [
               {
@@ -165,76 +135,70 @@ class ChouseiSanMCPServer {
       }
     );
 
-    // 日程候補のプレビューツール（Gemini APIベース）
+    // 日程候補のバリデーションツール（Claude解析版）
     this.server.registerTool(
-      "preview_schedule_candidates",
+      "validate_schedule_candidates",
       {
-        title: "日程候補プレビュー（Gemini API解析）",
-        description:
-          "自然言語による日程指定をGemini APIで解析し、生成される日程候補をプレビューします",
+        title: "日程候補バリデーション",
+        description: "Claudeが生成した日程候補リストの形式をバリデーションし、調整さん作成前に確認します",
         inputSchema: {
-          schedule: z.string().describe("日程の指定（自然言語）"),
+          dateCandidates: z.array(z.string()).describe("バリデーションする日程候補のリスト"),
           timeFormat: z
             .string()
             .optional()
             .default("19:30〜")
-            .describe("時間帯の表記"),
-          maxDates: z
-            .number()
-            .optional()
-            .default(10)
-            .describe("表示する最大日程数")
+            .describe("時間帯の表記")
         }
       },
-      async request => {
+      async (request) => {
         try {
-          const {
-            schedule,
-            timeFormat = "19:30〜",
-            maxDates = 10
-          } = request;
+          const { dateCandidates, timeFormat = "19:30〜" } = request;
 
-          //console.error(`Gemini APIプレビュー解析開始: ${schedule}`);
-
-          const dateCandidates = await this.geminiDateCalculator.parseScheduleWithGemini(
-            schedule,
-            timeFormat
-          );
-
-          if (dateCandidates.length === 0) {
+          if (!Array.isArray(dateCandidates) || dateCandidates.length === 0) {
             return {
               content: [
                 {
                   type: "text",
-                  text: `❌ 日程の解析に失敗しました。\n指定された日程: "${schedule}"\n\nもう一度、別の表現で試してみてください。\n\n**トラブルシューティング:**\n- より具体的な表現を試す\n- 例: "毎週月曜日"、"来月の第1・3金曜日"\n- Gemini API接続を確認`
+                  text: `❌ 日程候補が指定されていません。\n\n正しい形式: ['2024年7月5日(金)', '2024年7月12日(金)']`
                 }
               ]
             };
           }
 
-          const displayDates = dateCandidates.slice(0, maxDates);
+          // 簡単な形式チェック
+          const invalidCandidates = dateCandidates.filter(date => {
+            // YYYY年MM月DD日(曜日) の基本形式チェック
+            return !/^\d{4}年\d{1,2}月\d{1,2}日\(.+\)$/.test(date);
+          });
+
+          if (invalidCandidates.length > 0) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: `⚠️ 不正な形式の日程候補が見つかりました：\n\n${invalidCandidates.map(d => `• ${d}`).join('\n')}\n\n**正しい形式**: YYYY年MM月DD日(曜日)\n**例**: 2024年7月5日(金)`
+                }
+              ]
+            };
+          }
 
           return {
             content: [
               {
                 type: "text",
-                text: `📅 **日程候補プレビュー（Gemini API解析）**\n\n🔍 **解析した日程**: "${schedule}"\n⏰ **時間**: ${timeFormat}\n📊 **生成された候補数**: ${
-                  dateCandidates.length
-                }件\n\n📋 **日程一覧** (最初の${displayDates.length}件):\n${displayDates
+                text: `✅ **日程候補バリデーション完了**\n\n📊 **総候補数**: ${dateCandidates.length}件\n⏰ **時間**: ${timeFormat}\n\n📋 **全候補一覧**:\n${dateCandidates
                   .map((d, i) => `${i + 1}. ${d}`)
-                  .join(
-                    "\n"
-                  )}${dateCandidates.length > maxDates ? `\n\n... 他${dateCandidates.length - maxDates}件の候補があります` : ""}\n\n🤖 **この解析はGemini APIによって行われており、より自然な日本語表現に対応しています。**\n\n✨ **Gemini APIの特徴:**\n- 複雑な日程表現も理解\n- 文脈を考慮した解析\n- 日本語に最適化`
+                  .join('\n')}\n\n✅ **形式チェック**: すべて正常\n💡 **次のステップ**: \`create_chouseisan_event\` ツールでイベントを作成できます。\n\n🤖 **Claude解析による日程生成が完了しました！**`
               }
             ]
           };
         } catch (error) {
-          //console.error("Gemini APIプレビューエラー:", error);
+          console.error("バリデーションエラー:", error);
           return {
             content: [
               {
                 type: "text",
-                text: `❌ 日程候補の生成に失敗しました: ${
+                text: `❌ バリデーション処理でエラーが発生しました: ${
                   error instanceof Error ? error.message : String(error)
                 }`
               }
@@ -251,7 +215,7 @@ class ChouseiSanMCPServer {
   async start() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    //console.error("調整さんMCP Server（Gemini API版）が開始されました");
+    console.error("調整さんMCP Server（Claude解析版）が開始されました");
   }
 }
 
@@ -260,26 +224,26 @@ class ChouseiSanMCPServer {
  */
 async function main() {
   try {
-    //console.error("調整さんMCP Server（Gemini API版）開始中...");
+    console.error("調整さんMCP Server（Claude解析版）開始中...");
 
     const server = new ChouseiSanMCPServer();
 
     // エラーハンドリング
     process.on("SIGINT", () => {
-      //console.error("\nサーバーを終了します...");
+      console.error("\nサーバーを終了します...");
       process.exit(0);
     });
     process.on("unhandledRejection", (reason, promise) => {
-      //console.error("Unhandled Rejection at:", promise, "reason:", reason);
+      console.error("Unhandled Rejection at:", promise, "reason:", reason);
     });
     process.on("uncaughtException", error => {
-      //console.error("Uncaught Exception:", error);
+      console.error("Uncaught Exception:", error);
     });
 
     await server.start();
   } catch (error) {
-    //console.error("サーバー開始エラー:", error);
-    //console.error("エラー詳細:", error instanceof Error ? error.stack : error);
+    console.error("サーバー開始エラー:", error);
+    console.error("エラー詳細:", error instanceof Error ? error.stack : error);
     process.exit(1);
   }
 }
