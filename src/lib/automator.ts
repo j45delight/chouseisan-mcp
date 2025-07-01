@@ -2,16 +2,20 @@ import { chromium, Browser, Page } from 'playwright';
 import type { ChouseiSanEventData, ChouseiSanResult } from '../types/index.js';
 
 /**
- * 調整さん自動化クラス
- * Playwrightを使用して調整さんのイベント作成を自動化
+ * 調整さん自動化クラス（ログイン対応版）
+ * Playwrightを使用して調整さんへのログインとイベント作成を自動化
  */
 export class ChouseiSanAutomator {
   private browser: Browser | null = null;
   private page: Page | null = null;
+  private email: string;
+  private password: string;
 
-  constructor() {
+  constructor(email: string, password: string) {
     this.browser = null;
     this.page = null;
+    this.email = email;
+    this.password = password;
   }
 
   /**
@@ -69,7 +73,71 @@ export class ChouseiSanAutomator {
   }
 
   /**
-   * 調整さんイベントを作成
+   * 調整さんにログイン
+   */
+  async login(): Promise<boolean> {
+    if (!this.page) {
+      console.error('ページが初期化されていません');
+      return false;
+    }
+
+    try {
+      console.error('調整さんログイン開始...');
+      
+      // ログインページにアクセス
+      await this.page.goto('https://chouseisan.com/auth/login', { timeout: 30000 });
+      
+      // メールアドレスを入力
+      await this.page.getByRole('textbox', { name: 'メールアドレス' }).fill(this.email);
+      
+      // パスワードを入力
+      await this.page.getByRole('textbox', { name: 'パスワード' }).fill(this.password);
+      
+      // ログイン状態を保持するチェックボックスをチェック
+      await this.page.getByRole('checkbox', { name: 'ログイン状態を保持する' }).check();
+      
+      // ログインボタンをクリック
+      await this.page.getByRole('button', { name: 'ログイン' }).click();
+      
+      // ログイン結果を待機
+      await this.page.waitForTimeout(3000);
+      
+      // ログイン失敗のチェック（エラーメッセージの有無を確認）
+      const errorAlert = this.page.locator('div[role="alert"]');
+      const hasError = await errorAlert.count() > 0;
+      
+      if (hasError) {
+        const errorText = await errorAlert.textContent();
+        console.error('ログイン失敗:', errorText);
+        return false;
+      }
+      
+      // ログイン成功の確認（URLの変化またはページの内容で判定）
+      const currentUrl = this.page.url();
+      console.error('ログイン後URL:', currentUrl);
+      
+      // ログインに成功した場合、通常はリダイレクトが発生するかログインページから離れる
+      if (currentUrl.includes('/auth/login')) {
+        // ページが変わらない場合は再度エラーチェック
+        await this.page.waitForTimeout(2000);
+        const stillHasError = await errorAlert.count() > 0;
+        if (stillHasError) {
+          console.error('ログイン失敗: ログインページに留まっています');
+          return false;
+        }
+      }
+      
+      console.error('ログイン成功');
+      return true;
+      
+    } catch (error) {
+      console.error('ログインエラー:', error);
+      return false;
+    }
+  }
+
+  /**
+   * 調整さんイベントを作成（ログイン後）
    */
   async createEvent(eventData: ChouseiSanEventData): Promise<ChouseiSanResult> {
     if (!this.page) {
@@ -81,43 +149,62 @@ export class ChouseiSanAutomator {
     }
 
     try {
-      // 調整さんのメインページへアクセス
+      console.error('イベント作成開始...');
+      
+      // 調整さんのメインページへアクセス（ログイン状態を保持）
       await this.page.goto('https://chouseisan.com/', { timeout: 30000 });
+      
+      // ページが完全に読み込まれるまで待機
+      await this.page.waitForLoadState('networkidle');
+      
       // イベント名を入力
-      await this.page.getByRole('textbox', { name: 'event_name' }).fill(eventData.title);
+      console.error('イベント名入力:', eventData.title);
+      const eventNameField = this.page.getByRole('textbox', { name: 'event_name' });
+      await eventNameField.waitFor({ state: 'visible' });
+      await eventNameField.fill(eventData.title);
       
       // メモがある場合は入力
       if (eventData.memo) {
-        const memoField = this.page.locator('textarea[name=\"comment\"]');
+        console.error('メモ入力:', eventData.memo);
+        const memoField = this.page.locator('textarea[name="comment"]');
         await memoField.fill(eventData.memo);
       }
       
       // 時間設定を変更
       if (eventData.timeFormat) {
-        await this.page.getByRole('textbox', { name: 'calendar_time_suffix' }).fill(eventData.timeFormat);
+        console.error('時間フォーマット設定:', eventData.timeFormat);
+        const timeField = this.page.getByRole('textbox', { name: 'calendar_time_suffix' });
+        await timeField.fill(eventData.timeFormat);
       }
       
       // 日程候補を入力
       if (eventData.dateCandidates && eventData.dateCandidates.length > 0) {
+        console.error('日程候補入力:', eventData.dateCandidates.length, '件');
         const dateField = this.page.getByRole('textbox', { name: 'event_kouho' });
         await dateField.fill(eventData.dateCandidates.join('\n'));
       }
       
       // 出欠表を作成ボタンをクリック
+      console.error('作成ボタンクリック');
       const createButton = this.page.getByRole('button', { name: '出欠表をつくる' });
       await createButton.click();
       
       // 結果ページの読み込みを待つ
+      console.error('結果ページ待機中...');
       await this.page.waitForURL('**/create_complete**', { timeout: 15000 });
       
       // 生成されたURLを取得
-      const urlElement = this.page.locator('input[type=\"text\"]').first();
+      console.error('生成URL取得中...');
+      const urlElement = this.page.locator('input[type="text"]').first();
+      await urlElement.waitFor({ state: 'visible' });
       const generatedUrl = await urlElement.inputValue();
+      
+      console.error('イベント作成成功:', generatedUrl);
       
       return {
         success: true,
         url: generatedUrl,
-        message: 'イベントが正常に作成されました'
+        message: 'ログイン後にイベントが正常に作成されました'
       };
       
     } catch (error) {
@@ -125,7 +212,35 @@ export class ChouseiSanAutomator {
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
-        message: 'イベント作成に失敗しました'
+        message: 'ログイン後のイベント作成に失敗しました'
+      };
+    }
+  }
+
+  /**
+   * ログインしてイベントを作成する完全なフロー
+   */
+  async loginAndCreateEvent(eventData: ChouseiSanEventData): Promise<ChouseiSanResult> {
+    try {
+      // ログイン実行
+      const loginSuccess = await this.login();
+      if (!loginSuccess) {
+        return {
+          success: false,
+          message: 'ログインに失敗しました。メールアドレスとパスワードを確認してください。',
+          error: 'Login failed'
+        };
+      }
+      
+      // ログイン成功後にイベント作成
+      return await this.createEvent(eventData);
+      
+    } catch (error) {
+      console.error('ログイン＆イベント作成エラー:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
+        message: 'ログインまたはイベント作成に失敗しました'
       };
     }
   }

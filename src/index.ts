@@ -5,6 +5,8 @@ import { z } from "zod";
 import { ChouseiSanAutomator } from "./lib/automator.js";
 import { fileURLToPath } from "url";
 import path from "path";
+import dotenv from "dotenv";
+dotenv.config();
 
 /**
  * 調整さん自動化MCP Server with Claude direct date parsing
@@ -71,7 +73,9 @@ class ChouseiSanMCPServer {
           //console.error(`候補一覧: ${dateCandidates.slice(0, 3).join(", ")}${dateCandidates.length > 3 ? "..." : ""}`);
 
           // 調整さん自動化実行
-          const automator = new ChouseiSanAutomator();
+          const email = process.env.CHOUSEISAN_EMAIL || "";
+          const password = process.env.CHOUSEISAN_PASSWORD || "";
+          const automator = new ChouseiSanAutomator(email, password);
           //console.error("ブラウザ初期化開始");
           const initialized = await automator.init();
           if (!initialized) {
@@ -86,6 +90,8 @@ class ChouseiSanMCPServer {
           }
 
           //console.error("調整さん作成開始");
+          // 調整さんログイン
+          await automator.login();
           const result = await automator.createEvent({
             title,
             memo,
