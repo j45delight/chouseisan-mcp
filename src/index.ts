@@ -6,7 +6,8 @@ import { ChouseiSanAutomator } from "./lib/automator.js";
 import { fileURLToPath } from "url";
 import path from "path";
 import dotenv from "dotenv";
-dotenv.config();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.join(__dirname, "../.env") });
 
 /**
  * 調整さん自動化MCP Server with Claude direct date parsing
